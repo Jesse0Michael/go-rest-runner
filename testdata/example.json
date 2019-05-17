@@ -1,0 +1,12 @@
+[
+  {
+    "method": "GET",
+    "url": "http://google.com",
+    "times": 10
+  },
+  {
+    "method": "POST",
+    "url": "https://stackoverflow.com",
+    "body": "{\"test\":\"best\"}"
+  }
+]
