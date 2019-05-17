@@ -24,7 +24,12 @@ Please have [GO](https://golang.org/) installed on your machine
 
 ```bash
 Usage of go-rest-runner:
-        go-rest-runner path/to/requests_file.json [options..]
+go-rest-runner [options..] path/to/requests_file.json
+  -v int
+        verbosity level.
+        0 (default): quiet
+        1: write response details
+        2: write response body
 ```
 
 `go-rest-runner example.json`

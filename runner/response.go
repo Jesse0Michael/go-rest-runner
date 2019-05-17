@@ -35,6 +35,7 @@ func (rs Responses) GroupReport() GroupReport {
 	}
 
 	if len(rs) > 0 {
+		group.Call = rs[0].Call
 		group.AvgDuration = sumDuration / float64(len(rs))
 	}
 
@@ -43,6 +44,7 @@ func (rs Responses) GroupReport() GroupReport {
 
 // GroupReport is a collection of analized responses for the same call
 type GroupReport struct {
+	Call        string            `json:"call"`
 	Times       int               `json:"times"`
 	AvgDuration float64           `json:"avg_duration"`
 	StatusCodes []GroupStatusCode `json:"status_codes"`
@@ -52,10 +54,4 @@ type GroupReport struct {
 type GroupStatusCode struct {
 	Code  int `json:"code"`
 	Times int `json:"times"`
-}
-
-// Report is the analyzation of all responses
-type Report struct {
-	TotalDuration float64                `json:"total_duration"`
-	GroupReports  map[string]GroupReport `json:"group_reports"`
 }

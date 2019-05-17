@@ -3,6 +3,8 @@ package runner
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math"
 	"net/http"
 	"time"
@@ -12,6 +14,8 @@ import (
 type Client struct {
 	Requests   []Request
 	httpClient http.Client
+
+	Verbose int
 }
 
 // NewClient creates a new rest runner client
@@ -23,9 +27,8 @@ func NewClient(requests []Request) *Client {
 }
 
 // Run executes every request, records data, and returns a report
-func (c *Client) Run() (*Report, error) {
-	report := Report{GroupReports: map[string]GroupReport{}}
-	runStart := time.Now()
+func (c *Client) Run() ([]GroupReport, error) {
+	report := []GroupReport{}
 	for _, r := range c.Requests {
 		call := fmt.Sprintf("%s:%s", r.Method, r.URL)
 		responses := Responses{}
@@ -40,16 +43,26 @@ func (c *Client) Run() (*Report, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			duration := time.Since(start).Seconds()
 			responses = append(responses, Response{
 				Call:       call,
 				StatusCode: resp.StatusCode,
-				Duration:   time.Since(start).Seconds(),
+				Duration:   duration,
 			})
+			if c.Verbose >= 1 {
+				log.Printf("%s %s %d %fs\n", r.Method, r.URL, resp.StatusCode, duration)
+			}
+
+			if c.Verbose >= 2 {
+				body, _ := ioutil.ReadAll(resp.Body)
+				log.Println(string(body))
+			}
+
 		}
 
-		report.GroupReports[call] = responses.GroupReport()
+		report = append(report, responses.GroupReport())
 	}
 
-	report.TotalDuration = time.Since(runStart).Seconds()
-	return &report, nil
+	return report, nil
 }
