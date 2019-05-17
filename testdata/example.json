@@ -7,6 +7,9 @@
   {
     "method": "POST",
     "url": "https://stackoverflow.com",
-    "body": "{\"test\":\"best\"}"
+    "body": "{\"test\":\"best\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
   }
 ]

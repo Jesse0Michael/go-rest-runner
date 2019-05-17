@@ -10,10 +10,11 @@ import (
 
 // Request is a structure containing a web request that will be made
 type Request struct {
-	URL    string      `json:"url"`
-	Method string      `json:"method"`
-	Body   RequestBody `json:"body,omitempty"`
-	Times  int         `json:"times,omitempty"`
+	URL     string            `json:"url"`
+	Method  string            `json:"method"`
+	Body    RequestBody       `json:"body,omitempty"`
+	Headers map[string]string `json:"headers,omitempty"`
+	Times   int               `json:"times,omitempty"`
 }
 
 // RequestBody allows control over the Request Body's encoding

@@ -32,13 +32,16 @@ func (c *Client) Run() ([]GroupReport, error) {
 	for _, r := range c.Requests {
 		call := fmt.Sprintf("%s:%s", r.Method, r.URL)
 		responses := Responses{}
-		req, err := http.NewRequest(r.Method, r.URL, bytes.NewReader(r.Body))
-		if err != nil {
-			return nil, err
-		}
-
 		for i := 0; i < int(math.Max(1, float64(r.Times))); i++ {
 			start := time.Now()
+			req, err := http.NewRequest(r.Method, r.URL, bytes.NewReader(r.Body))
+			if err != nil {
+				return nil, err
+			}
+
+			for key, val := range r.Headers {
+				req.Header.Add(key, val)
+			}
 			resp, err := c.httpClient.Do(req)
 			if err != nil {
 				return nil, err
@@ -50,6 +53,7 @@ func (c *Client) Run() ([]GroupReport, error) {
 				StatusCode: resp.StatusCode,
 				Duration:   duration,
 			})
+
 			if c.Verbose >= 1 {
 				log.Printf("%s %s %d %fs\n", r.Method, r.URL, resp.StatusCode, duration)
 			}
@@ -58,7 +62,6 @@ func (c *Client) Run() ([]GroupReport, error) {
 				body, _ := ioutil.ReadAll(resp.Body)
 				log.Println(string(body))
 			}
-
 		}
 
 		report = append(report, responses.GroupReport())
