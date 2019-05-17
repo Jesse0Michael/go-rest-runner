@@ -20,14 +20,20 @@ func usage() {
 
 func main() {
 	flag.Usage = usage
-	verbose := flag.Int("v", 0, "verbosity level.\n0 (default): quiet\n1: write response details\n2: write response body")
+	verbose := flag.Int("v", 0, "verbosity level. [0: quiet | 1: write response details | 2: write response body] (default 0)")
+	format := flag.String("f", "text", "report format. [text | json]")
 	flag.Parse()
 
+	// Validate arguments
 	requestsFile := flag.Arg(0)
-	// Prepare rest runner
 	if requestsFile == "" {
 		usage()
 	}
+	if format != nil && (*format != "text" && *format != "json") {
+		usage()
+	}
+
+	// Prepare rest runner
 	file, err := os.Open(requestsFile)
 	if err != nil {
 		log.Fatalf("failed to open: %s error: %s", requestsFile, err.Error())
@@ -50,6 +56,15 @@ func main() {
 	}
 
 	// Report rest runner
-	r, _ := json.Marshal(report)
-	log.Print(string(r))
+	switch *format {
+	case "json":
+		r, _ := json.Marshal(report)
+		log.Println(string(r))
+	case "text":
+		fmt.Println("Go Rest Runner")
+		fmt.Println("--------------------------------------------------")
+		for _, r := range report {
+			fmt.Printf("%s times: %d average duration: %f status: %s\n", r.Call, r.Times, r.AvgDuration, r.StatusCodes.String())
+		}
+	}
 }

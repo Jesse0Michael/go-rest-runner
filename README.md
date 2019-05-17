@@ -25,11 +25,10 @@ Please have [GO](https://golang.org/) installed on your machine
 ```bash
 Usage of go-rest-runner:
 go-rest-runner [options..] path/to/requests_file.json
+  -f string
+        report format. [text | json] (default "text")
   -v int
-        verbosity level.
-        0 (default): quiet
-        1: write response details
-        2: write response body
+        verbosity level. [0: quiet | 1: write response details | 2: write response body] (default 0)
 ```
 
 `go-rest-runner example.json`
