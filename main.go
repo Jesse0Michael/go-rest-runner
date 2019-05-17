@@ -12,7 +12,8 @@ import (
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: go-rest-runner path/to/requests_file.json\n")
+	fmt.Fprintln(os.Stderr, "Usage of go-rest-runner:")
+	fmt.Fprintln(os.Stderr, "	go-rest-runner path/to/requests_file.json [options..]")
 	flag.PrintDefaults()
 	os.Exit(2)
 }
