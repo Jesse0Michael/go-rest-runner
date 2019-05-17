@@ -12,7 +12,7 @@ import (
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: go-rest-runner [path/to/requests_file.json]\n")
+	fmt.Fprintf(os.Stderr, "usage: go-rest-runner path/to/requests_file.json\n")
 	flag.PrintDefaults()
 	os.Exit(2)
 }
@@ -24,7 +24,7 @@ func main() {
 
 	// Prepare rest runner
 	if requestsFile == "" {
-		log.Fatalf("path to requests file is required.")
+		usage()
 	}
 	file, err := os.Open(requestsFile)
 	if err != nil {
@@ -40,10 +40,13 @@ func main() {
 	}
 	client := runner.NewClient(requests)
 
+	// Run rest runner
 	report, err := client.Run()
 	if err != nil {
 		log.Fatalf("failed to run the rest runner error: %s", err.Error())
 	}
+
+	// Report rest runner
 	r, _ := json.Marshal(report)
 	log.Print(string(r))
 }
